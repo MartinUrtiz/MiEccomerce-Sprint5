@@ -1,31 +1,52 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-const stores = [
-  { id: 'central', name: 'Tienda Central', products: 42 },
-  { id: 'norte', name: 'Tienda Norte', products: 21 },
-  { id: 'sur', name: 'Tienda Sur', products: 18 },
-  { id: 'online', name: 'Tienda Online', products: 42 },
-]
+import { getProducts, type Product } from '../../../../services/api'
 
 function CategoriesList() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    getProducts()
+      .then(setProducts)
+      .catch((reason: Error) => setError(reason.message))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const categories = Array.from(
+    products.reduce((result, product) => {
+      const category = product.category || 'Sin categoria'
+      result.set(category, (result.get(category) || 0) + 1)
+      return result
+    }, new Map<string, number>()),
+  )
+
   return (
     <section className="flex flex-col gap-5">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-semibold text-white">Tiendas</h1>
-        <button className="self-start rounded-full bg-[#596162] px-4 py-2 text-xs font-semibold text-white hover:bg-[#697273] sm:self-auto">
-          Agregar Tienda
-        </button>
+      <header>
+        <h1 className="text-2xl font-semibold text-white">Categorias</h1>
+        <p className="mt-1 text-sm text-zinc-400">Agrupadas desde los productos de Sprint3</p>
       </header>
 
+      {loading ? <p className="text-zinc-400">Cargando categorias...</p> : null}
+      {error ? <p className="rounded-lg border border-red-900 bg-red-950/40 p-4 text-red-200">{error}</p> : null}
+
+      {!loading && !error && categories.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-zinc-700 p-10 text-center text-zinc-400">
+          No hay categorias porque la base de datos no tiene productos todavia.
+        </div>
+      ) : null}
+
       <div className="grid gap-4 md:grid-cols-2">
-        {stores.map((store) => (
+        {categories.map(([category, count]) => (
           <Link
-            key={store.id}
-            to={`/categorias/${store.id}`}
+            key={category}
+            to={`/categorias/${encodeURIComponent(category)}`}
             className="rounded-xl bg-[#2d2d2d] p-5 shadow-md transition hover:bg-[#363636]"
           >
-            <p className="text-lg font-semibold text-white">{store.name}</p>
-            <p className="mt-2 text-sm text-zinc-400">{store.products} productos disponibles</p>
+            <p className="text-lg font-semibold text-white">{category}</p>
+            <p className="mt-2 text-sm text-zinc-400">{count} productos</p>
           </Link>
         ))}
       </div>
