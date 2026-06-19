@@ -80,12 +80,40 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
+function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
+  return (
+    <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-zinc-800 bg-[#242424] px-5 sm:px-6">
+      <div className="flex min-w-0 items-center gap-3">
+        <button
+          type="button"
+          aria-label="Abrir menu"
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-zinc-800 text-white shadow lg:hidden"
+          onClick={onOpenSidebar}
+        >
+          <span className="sr-only">Abrir menu</span>
+          <span className="block h-0.5 w-5 bg-current before:relative before:-top-1.5 before:block before:h-0.5 before:bg-current after:relative after:top-1.5 after:block after:h-0.5 after:bg-current" />
+        </button>
+
+        <div className="min-w-0">
+          <p className="truncate text-sm text-zinc-400">Panel administrativo</p>
+          <h2 className="truncate text-lg font-semibold text-white">Gestor Tienda</h2>
+        </div>
+      </div>
+
+      <div className="hidden items-center gap-2 rounded-full bg-[#6d7a7a] px-3 py-1.5 text-xs font-medium text-white sm:flex">
+        <span className="grid h-5 w-5 place-items-center rounded-full bg-zinc-900 text-[10px]">A</span>
+        Admin
+      </div>
+    </header>
+  )
+}
+
 function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-[#1c1c1c] text-zinc-100">
-      <div className="flex min-h-screen">
+    <div className="h-screen overflow-hidden bg-[#1c1c1c] text-zinc-100">
+      <div className="flex h-screen">
         <div className="hidden lg:block">
           <Sidebar />
         </div>
@@ -108,20 +136,11 @@ function AppLayout() {
           <Sidebar onNavigate={() => setIsSidebarOpen(false)} />
         </div>
 
-        <main className="min-w-0 flex-1 bg-[#242424]">
-          <div className="flex min-h-screen flex-col p-5 sm:p-6">
-            <button
-              type="button"
-              aria-label="Abrir menu"
-              className="mb-5 inline-flex h-10 w-10 items-center justify-center rounded-md bg-zinc-800 text-white shadow lg:hidden"
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              <span className="sr-only">Abrir menu</span>
-              <span className="block h-0.5 w-5 bg-current before:relative before:-top-1.5 before:block before:h-0.5 before:bg-current after:relative after:top-1.5 after:block after:h-0.5 after:bg-current" />
-            </button>
-
+        <main className="flex h-screen min-w-0 flex-1 flex-col bg-[#242424]">
+          <Header onOpenSidebar={() => setIsSidebarOpen(true)} />
+          <section className="h-[calc(100vh-72px)] overflow-y-auto p-5 sm:p-6">
             <Outlet />
-          </div>
+          </section>
         </main>
       </div>
     </div>
