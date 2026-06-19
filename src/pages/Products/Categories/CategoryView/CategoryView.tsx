@@ -27,7 +27,7 @@ function CategoryView() {
         {products.map((product) => (
           <Link
             key={product.id}
-            to={`/productos/${product.id}`}
+            to={`/products/${product.id}`}
             className="flex items-center justify-between rounded-xl bg-[#2d2d2d] p-4 hover:bg-[#363636]"
           >
             <span className="font-medium text-white">{product.name}</span>

@@ -57,7 +57,7 @@ function Home() {
 
       {stats ? (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-          <SummaryCard title="Productos" value={stats.summary.products} to="/productos" />
+          <SummaryCard title="Productos" value={stats.summary.products} to="/products" />
           <SummaryCard title="Usuarios" value={stats.summary.users} />
           <SummaryCard title="Ordenes" value={stats.summary.orders} />
           <SummaryCard

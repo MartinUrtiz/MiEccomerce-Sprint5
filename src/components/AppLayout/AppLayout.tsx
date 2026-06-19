@@ -1,13 +1,24 @@
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const navItems = [
-  { to: '/', label: 'Inicio', icon: 'home' },
-  { to: '/productos', label: 'Productos', icon: 'box' },
-  { to: '/categorias', label: 'Categorias', icon: 'store' },
+  { to: '/home', label: 'Inicio', icon: 'home', end: true },
+  { to: '/products', label: 'Productos', icon: 'box' },
+  { to: '/categories', label: 'Categorias', icon: 'store' },
 ]
 
 function Icon({ name }: { name: string }) {
+  if (name === 'user') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+        <path
+          fill="currentColor"
+          d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z"
+        />
+      </svg>
+    )
+  }
+
   if (name === 'box') {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
@@ -43,19 +54,19 @@ function Icon({ name }: { name: string }) {
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <aside className="flex h-full w-[296px] shrink-0 flex-col bg-[#202020] px-5 py-6 text-white">
-      <div className="mb-8 flex items-center gap-2 text-2xl font-bold">
-        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#ec1b2e] text-xs font-black text-[#202020]">
-          GT
+      <div className="mb-10 flex items-center gap-3 text-2xl font-bold text-[#ff1f32]">
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#ff1f32] text-sm font-black text-[#202020]">
+          S
         </span>
-        Gestor Tienda
+        Santander
       </div>
 
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-2" aria-label="Menu principal">
         {navItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
-            end={item.to === '/'}
+            end={item.end}
             onClick={onNavigate}
             className={({ isActive }) =>
               [
@@ -72,22 +83,40 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="mt-auto flex items-center gap-2 rounded-full bg-[#6d7a7a] px-2 py-1 text-xs text-white">
-        <span className="grid h-5 w-5 place-items-center rounded-full bg-zinc-900 text-[10px]">A</span>
-        Admin
-      </div>
+      <NavLink
+        to="/profile"
+        onClick={onNavigate}
+        className={({ isActive }) =>
+          [
+            'mt-auto flex items-center gap-2 rounded-full px-2 py-1 text-xs font-medium text-white transition',
+            isActive ? 'bg-[#788383]' : 'bg-[#566061] hover:bg-[#667071]',
+          ].join(' ')
+        }
+      >
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-zinc-900">
+          <Icon name="user" />
+        </span>
+        Olivia
+      </NavLink>
     </aside>
   )
 }
 
-function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
+function getPageTitle(pathname: string) {
+  if (pathname.startsWith('/products')) return 'Productos'
+  if (pathname.startsWith('/categories')) return 'Categorias'
+  if (pathname.startsWith('/profile')) return 'Perfil'
+  return 'Inicio'
+}
+
+function Header({ onOpenSidebar, title }: { onOpenSidebar: () => void; title: string }) {
   return (
     <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-zinc-800 bg-[#242424] px-5 sm:px-6">
       <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"
           aria-label="Abrir menu"
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-zinc-800 text-white shadow lg:hidden"
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-zinc-800 text-white shadow min-[1025px]:hidden"
           onClick={onOpenSidebar}
         >
           <span className="sr-only">Abrir menu</span>
@@ -95,14 +124,8 @@ function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
         </button>
 
         <div className="min-w-0">
-          <p className="truncate text-sm text-zinc-400">Panel administrativo</p>
-          <h2 className="truncate text-lg font-semibold text-white">Gestor Tienda</h2>
+          <h2 className="truncate text-2xl font-semibold text-white sm:text-3xl">{title}</h2>
         </div>
-      </div>
-
-      <div className="hidden items-center gap-2 rounded-full bg-[#6d7a7a] px-3 py-1.5 text-xs font-medium text-white sm:flex">
-        <span className="grid h-5 w-5 place-items-center rounded-full bg-zinc-900 text-[10px]">A</span>
-        Admin
       </div>
     </header>
   )
@@ -110,11 +133,13 @@ function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
 
 function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const { pathname } = useLocation()
+  const title = getPageTitle(pathname)
 
   return (
     <div className="h-screen overflow-hidden bg-[#1c1c1c] text-zinc-100">
       <div className="flex h-screen">
-        <div className="hidden lg:block">
+        <div className="hidden min-[1025px]:block">
           <Sidebar />
         </div>
 
@@ -122,14 +147,14 @@ function AppLayout() {
           <button
             type="button"
             aria-label="Cerrar menu"
-            className="fixed inset-0 z-30 bg-black/55 lg:hidden"
+            className="fixed inset-0 z-30 bg-black/55 min-[1025px]:hidden"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
         <div
           className={[
-            'fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 lg:hidden',
+            'fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 min-[1025px]:hidden',
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
           ].join(' ')}
         >
@@ -137,7 +162,7 @@ function AppLayout() {
         </div>
 
         <main className="flex h-screen min-w-0 flex-1 flex-col bg-[#242424]">
-          <Header onOpenSidebar={() => setIsSidebarOpen(true)} />
+          <Header title={title} onOpenSidebar={() => setIsSidebarOpen(true)} />
           <section className="h-[calc(100vh-72px)] overflow-y-auto p-5 sm:p-6">
             <Outlet />
           </section>

@@ -42,7 +42,7 @@ function CategoriesList() {
         {categories.map(([category, count]) => (
           <Link
             key={category}
-            to={`/categorias/${encodeURIComponent(category)}`}
+            to={`/categories/${encodeURIComponent(category)}`}
             className="rounded-xl bg-[#2d2d2d] p-5 shadow-md transition hover:bg-[#363636]"
           >
             <p className="text-lg font-semibold text-white">{category}</p>

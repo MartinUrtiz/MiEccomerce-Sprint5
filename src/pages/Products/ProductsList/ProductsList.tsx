@@ -78,7 +78,7 @@ function ProductsList() {
           return (
             <Link
               key={product.id}
-              to={`/productos/${product.id}`}
+              to={`/products/${product.id}`}
               className="flex items-center gap-4 rounded-xl bg-[#2d2d2d] p-3 text-left shadow-md transition hover:bg-[#363636]"
             >
               <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg bg-zinc-700 text-xs text-zinc-400">
