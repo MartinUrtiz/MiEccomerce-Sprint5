@@ -3,8 +3,10 @@ import AppLayout from '../components/AppLayout/AppLayout'
 import Home from '../pages/Home/Home'
 import ProductsList from '../pages/Products/ProductsList/ProductsList'
 import ProductView from '../pages/Products/ProductView/ProductView'
+import ProductNew from '../pages/Products/ProductNew/ProductNew'
 import CategoriesList from '../pages/Products/Categories/CategoriesList/CategoriesList'
 import CategoryView from '../pages/Products/Categories/CategoryView/CategoryView'
+import CategoryNew from '../pages/Products/Categories/CategoryNew/CategoryNew'
 import Profile from '../pages/Profile/Profile'
 import NotFound from '../pages/NotFound/NotFound'
 
@@ -16,9 +18,11 @@ function AppRoutes() {
         <Route path="/home" element={<Home />} />
 
         <Route path="/products" element={<ProductsList />} />
+        <Route path="/products/new" element={<ProductNew />} />
         <Route path="/products/:id" element={<ProductView />} />
 
         <Route path="/categories" element={<CategoriesList />} />
+        <Route path="/categories/new" element={<CategoryNew />} />
         <Route path="/categories/:id" element={<CategoryView />} />
 
         <Route path="/profile" element={<Profile />} />
