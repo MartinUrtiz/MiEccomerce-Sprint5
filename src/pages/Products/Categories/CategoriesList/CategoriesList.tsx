@@ -1,18 +1,10 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getProducts, type Product } from '../../../../services/api'
+import { useProducts } from '../../../../hooks/useProducts'
 
 function CategoriesList() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    getProducts()
-      .then(setProducts)
-      .catch((reason: Error) => setError(reason.message))
-      .finally(() => setLoading(false))
-  }, [])
+  const { data: products, status } = useProducts()
+  const loading = status === 'loading'
+  const error = status === 'error' ? 'No se pudo cargar la base de datos.' : ''
 
   const categories = Array.from(
     products.reduce((result, product) => {

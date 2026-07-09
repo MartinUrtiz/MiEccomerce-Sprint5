@@ -1,5 +1,10 @@
-const API_URL = import.meta.env.VITE_API_URL || '/api'
+export const API_URL = import.meta.env.VITE_API_URL || '/api'
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'
+
+export interface ProductImage {
+  id: number
+  url: string
+}
 
 export interface Product {
   id: number
@@ -9,6 +14,20 @@ export interface Product {
   description: string | null
   image: string | null
   featured: number
+  stock: number
+  images: ProductImage[]
+}
+
+// Body que espera el PUT /products/:id: todos los atributos, editados o no.
+export interface ProductInput {
+  name: string
+  price: number
+  category: string | null
+  description: string | null
+  image: string | null
+  featured: number
+  stock: number
+  images: string[]
 }
 
 export interface Order {
@@ -58,15 +77,6 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
   const body: ApiResponse<T> = await response.json()
   return body.data
-}
-
-export function getProducts(search = '') {
-  const query = search ? `?search=${encodeURIComponent(search)}` : ''
-  return request<Product[]>(`/products${query}`)
-}
-
-export function getProduct(id: string) {
-  return request<Product>(`/products/${id}`)
 }
 
 export function getDashboardStats() {
