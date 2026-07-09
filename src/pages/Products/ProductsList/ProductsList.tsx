@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getProducts, resolveProductImage, type Product } from '../../../services/api'
+import { resolveProductImage } from '../../../services/api'
+import { useProducts } from '../../../hooks/useProducts'
 
 // ── Íconos ──────────────────────────────────────────────────────────────────
 
@@ -78,10 +79,8 @@ function ProductImage({ src, alt }: { src: string | null; alt: string }) {
 // ── Componente principal ─────────────────────────────────────────────────────
 
 function ProductsList() {
-  const [products, setProducts] = useState<Product[]>([])
   const [search, setSearch] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
 
   // BONUS mobile: estado para expandir la búsqueda en pantallas pequeñas
   const [searchOpen, setSearchOpen] = useState(false)
@@ -97,26 +96,19 @@ function ProductsList() {
     setSearch('')
   }
 
+  // Debounce: recién actualizamos debouncedSearch (lo que usa el hook) 250ms
+  // después de que el usuario deja de tipear.
   useEffect(() => {
-    const controller = new AbortController()
     const timer = window.setTimeout(() => {
-      setLoading(true)
-      setError('')
-      getProducts(search)
-        .then(setProducts)
-        .catch((reason: Error) => {
-          if (!controller.signal.aborted) setError(reason.message)
-        })
-        .finally(() => {
-          if (!controller.signal.aborted) setLoading(false)
-        })
+      setDebouncedSearch(search)
     }, 250)
 
-    return () => {
-      controller.abort()
-      window.clearTimeout(timer)
-    }
+    return () => window.clearTimeout(timer)
   }, [search])
+
+  const { data: products, status } = useProducts(debouncedSearch)
+  const loading = status === 'loading'
+  const error = status === 'error' ? 'No se pudo cargar la base de datos.' : ''
 
   return (
     <section className="flex flex-col gap-0 -m-5 sm:-m-6 h-[calc(100vh-72px)]">
@@ -209,7 +201,7 @@ function ProductsList() {
 
         {error && !loading && (
           <div className="rounded-lg border border-red-900 bg-red-950/40 p-4 text-sm text-red-200">
-            No se pudo cargar la base de datos: {error}
+            {error}
           </div>
         )}
 

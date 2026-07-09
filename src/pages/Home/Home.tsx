@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getProducts, type Product } from '../../services/api'
+import { useProducts } from '../../hooks/useProducts'
 
 // TODO: reemplazar por el nombre real del usuario cuando se implemente sesión
 const USERNAME = 'Olivia'
@@ -71,16 +70,9 @@ function SummaryBlock({ data }: { data: SectionData }) {
 }
 
 function Home() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    getProducts()
-      .then(setProducts)
-      .catch((reason: Error) => setError(reason.message))
-      .finally(() => setLoading(false))
-  }, [])
+  const { data: products, status } = useProducts()
+  const loading = status === 'loading'
+  const error = status === 'error'
 
   const categoryCount = new Set(
     products.map((p) => p.category || 'Sin categoria'),

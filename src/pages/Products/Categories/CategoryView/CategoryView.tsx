@@ -1,18 +1,12 @@
-import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getProducts, type Product } from '../../../../services/api'
+import { useProducts } from '../../../../hooks/useProducts'
 
 function CategoryView() {
   const { id = '' } = useParams()
   const category = decodeURIComponent(id)
-  const [products, setProducts] = useState<Product[]>([])
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    getProducts()
-      .then((data) => setProducts(data.filter((product) => (product.category || 'Sin categoria') === category)))
-      .catch((reason: Error) => setError(reason.message))
-  }, [category])
+  const { data: allProducts, status } = useProducts()
+  const products = allProducts.filter((product) => (product.category || 'Sin categoria') === category)
+  const error = status === 'error' ? 'No se pudo cargar la base de datos.' : ''
 
   return (
     <section className="flex max-w-3xl flex-col gap-5">
