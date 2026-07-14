@@ -148,3 +148,38 @@ export function useDeleteProduct() {
 
   return { deleteProduct, status, error }
 }
+async function postProduct(payload: ProductInput): Promise<Product> {
+  const response = await fetch(`${API_URL}/products/new`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+
+  const body = await response.json().catch(() => null)
+  if (!response.ok) {
+    throw new Error(body?.error || `Error HTTP ${response.status}`)
+  }
+
+  return body.data
+}
+
+export function useCreateProduct() {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [error, setError] = useState('')
+
+  async function createProduct(payload: ProductInput) {
+    setStatus('loading')
+    setError('')
+    try {
+      const created = await postProduct(payload)
+      setStatus('success')
+      return created
+    } catch (err) {
+      setStatus('error')
+      setError(err instanceof Error ? err.message : 'Error al crear el producto.')
+      throw err
+    }
+  }
+
+  return { createProduct, status, error }
+}
