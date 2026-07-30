@@ -30,6 +30,15 @@ export interface ProductInput {
   images: string[]
 }
 
+export interface Category {
+  id: number
+  name: string
+}
+
+export interface CategoryInput {
+  name: string
+}
+
 export interface Order {
   id: number
   user_id: number | null
@@ -43,6 +52,7 @@ export interface Order {
 export interface DashboardStats {
   summary: {
     products: number
+    categories: number
     users: number
     orders: number
     revenue: number
