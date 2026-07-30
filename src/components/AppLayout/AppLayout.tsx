@@ -56,9 +56,9 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     <aside className="flex h-full w-[296px] shrink-0 flex-col bg-[#202020] px-5 py-6 text-white">
       <div className="mb-10 flex items-center gap-3 text-2xl font-bold text-[#ff1f32]">
         <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#ff1f32] text-sm font-black text-[#202020]">
-          S
+          A
         </span>
-        Santander
+        Administración
       </div>
 
       <nav className="flex flex-col gap-2" aria-label="Menu principal">
@@ -96,7 +96,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <span className="grid h-7 w-7 place-items-center rounded-full bg-zinc-900">
           <Icon name="user" />
         </span>
-        Olivia
+        Usuario
       </NavLink>
     </aside>
   )

@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useProducts } from '../../hooks/useProducts'
 
-// TODO: reemplazar por el nombre real del usuario cuando se implemente sesión
-const USERNAME = 'Olivia'
+const USERNAME = 'Usuario'
 
 interface SectionData {
   count: number
